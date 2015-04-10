@@ -9,6 +9,7 @@ show_menu(){
     ENTER_LINE=`echo "\033[33m"`
     echo -e "${MENU}*********************************************${NORMAL}"
     echo -e "Welcome to Parrot On-Debian Installer Script"
+    echo -e "\t\trev 0.2 - 2015-06-10"
     echo -e "${MENU}**${NUMBER} 1)${MENU} Install Core Only ${NORMAL}"
     echo -e "${MENU}**${NUMBER} 2)${MENU} Install Cloud Edition ${NORMAL}"
     echo -e "${MENU}**${NUMBER} 3)${MENU} Install Standard Edition ${NORMAL}"
@@ -108,6 +109,7 @@ while [ opt != '' ]
 		home_install;
 		option_picked "Operation Done!";
 		exit;
+		;;
 	6) clear;
 		option_picked "Installing Embedded Edition";
 		core_install;
