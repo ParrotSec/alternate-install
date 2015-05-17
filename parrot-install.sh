@@ -30,9 +30,8 @@ function option_picked() {
 
 
 function core_install() {
-	echo -e "deb http://us.repository.frozenbox.org/mirrors/parrot stable main contrib non-free" > /etc/apt/sources.list.d/parrot.list
+	echo -e "deb http://eu.repository.frozenbox.org/mirrors/parrot stable main contrib non-free" > /etc/apt/sources.list.d/parrot.list
 	echo -e "deb http://eu.repository.frozenbox.org/mirrors/debian jessie main contrib non-free\n#deb-src http://eu.repository.frozenbox.org/mirrors/debian jessie main contrib non-free\n\n#deb http://eu.repository.frozenbox.org/mirrors/debian jessie-backports main contrib non-free\n#deb-src http://eu.repository.frozenbox.org/mirrors/debian jessie-backports main contrib non-free\n\ndeb http://security.debian.org/ jessie/updates main\n#deb-src http://security.debian.org/ jessie/updates main\n\ndeb http://eu.repository.frozenbox.org/mirrors/debian jessie-updates main contrib non-free\n#deb-src http://eu.repository.frozenbox.org/mirrors/debian jessie-updates main contrib non-free\n\n#deb http://eu.repository.frozenbox.org/mirrors/debian jessie-proposed-updates main contrib non-free\n#deb-src http://eu.repository.frozenbox.org/mirrors/debian jessie-updates main contrib non-free" > /etc/apt/sources.list.d/debian.list
-	wget -qO - http://repository.frozenbox.org/parrot/frozenbox.gpg.key | apt-key add -
 	apt-get update
 	apt-get -y dist-upgrade
 	apt-get update
