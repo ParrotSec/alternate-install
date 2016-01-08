@@ -30,7 +30,7 @@ function option_picked() {
 
 
 function core_install() {
-	echo -e "deb http://eu.archive.parrotsec.org/mirrors/parrot stable main contrib non-free" > /etc/apt/sources.list.d/parrot.list
+	echo -e "deb http://archive.parrotsec.org/mirrors/parrot stable main contrib non-free\ndeb http://archive.parrotsec.org/mirrors/parrot stable-security main contrib non-free" > /etc/apt/sources.list.d/parrot.list
 	#echo -e "deb http://eu.archive.parrotsec.org/mirrors/debian jessie main contrib non-free\n#deb-src http://eu.archive.parrotsec.org/mirrors/debian jessie main contrib non-free\n\n#deb http://eu.archive.parrotsec.org/mirrors/debian jessie-backports main contrib non-free\n#deb-src http://eu.archive.parrotsec.org/mirrors/debian jessie-backports main contrib non-free\n\ndeb http://security.debian.org/ jessie/updates main\n#deb-src http://security.debian.org/ jessie/updates main\n\ndeb http://eu.archive.parrotsec.org/mirrors/debian jessie-updates main contrib non-free\n#deb-src http://eu.archive.parrotsec.org/mirrors/debian jessie-updates main contrib non-free\n\n#deb http://eu.archive.parrotsec.org/mirrors/debian jessie-proposed-updates main contrib non-free\n#deb-src http://eu.archive.parrotsec.org/mirrors/debian jessie-updates main contrib non-free" > /etc/apt/sources.list.d/debian.list
 	wget -qO - http://archive.parrotsec.org/parrot/misc/parrotsec.gpg | apt-key add -
 	apt-get update
@@ -53,7 +53,7 @@ function full_install() {
 }
 
 function home_install() {
-	apt-get -y install parrot-interface parrot-interface-full
+	apt-get -y install parrot-interface-full
 }
 
 function embedded_install() {
