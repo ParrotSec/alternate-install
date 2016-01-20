@@ -34,30 +34,30 @@ function core_install() {
 	#echo -e "deb http://eu.archive.parrotsec.org/mirrors/debian jessie main contrib non-free\n#deb-src http://eu.archive.parrotsec.org/mirrors/debian jessie main contrib non-free\n\n#deb http://eu.archive.parrotsec.org/mirrors/debian jessie-backports main contrib non-free\n#deb-src http://eu.archive.parrotsec.org/mirrors/debian jessie-backports main contrib non-free\n\ndeb http://security.debian.org/ jessie/updates main\n#deb-src http://security.debian.org/ jessie/updates main\n\ndeb http://eu.archive.parrotsec.org/mirrors/debian jessie-updates main contrib non-free\n#deb-src http://eu.archive.parrotsec.org/mirrors/debian jessie-updates main contrib non-free\n\n#deb http://eu.archive.parrotsec.org/mirrors/debian jessie-proposed-updates main contrib non-free\n#deb-src http://eu.archive.parrotsec.org/mirrors/debian jessie-updates main contrib non-free" > /etc/apt/sources.list.d/debian.list
 	wget -qO - http://archive.parrotsec.org/parrot/misc/parrotsec.gpg | apt-key add -
 	apt-get update
-	apt-get -y install apt-parrot parrot-archive-keyring --no-install-recommends
+	apt-get -y --force-yes install apt-parrot parrot-archive-keyring --no-install-recommends
 	apt-get update
-	apt-get -y install parrot-core
-	apt-get -y dist-upgrade
+	apt-get -y --force-yes install parrot-core
+	apt-get -y --force-yes dist-upgrade
 }
 
 function cloud_install() {
-	apt-get -y install parrot-cloud parrot-tools-cloud
+	apt-get -y --force-yes install parrot-cloud parrot-tools-cloud
 }
 
 function standard_install() {
-	apt-get -y install parrot-interface parrot-tools
+	apt-get -y --force-yes install parrot-interface parrot-tools
 }
 
 function full_install() {
-	apt-get -y install parrot-interface parrot-tools parrot-interface-full parrot-tools-full
+	apt-get -y --force-yes install parrot-interface parrot-tools parrot-interface-full parrot-tools-full
 }
 
 function home_install() {
-	apt-get -y install parrot-interface-full
+	apt-get -y --force-yes install parrot-interface-full
 }
 
 function embedded_install() {
-	apt-get -y install parrot-interface parrot-tools-arm
+	apt-get -y --force-yes install parrot-interface parrot-tools-arm
 }
 
 
