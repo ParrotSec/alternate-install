@@ -6,7 +6,7 @@ function core_install() {
 	wget -qO - http://archive.parrotsec.org/parrot/misc/parrotsec.gpg | apt-key add -
 	apt-get update
 	apt-get -y --force-yes install apt-parrot parrot-archive-keyring --no-install-recommends
-	parrot-mirror-selector euro3 #change it if you want another mirror, launch it without parameters to get the full list of available mirrors
+	parrot-mirror-selector euro6 #change it if you want another mirror, launch it without parameters to get the full list of available mirrors
 	apt-get update
 	apt-get -y --force-yes install parrot-core
 	apt-get -y --force-yes dist-upgrade
