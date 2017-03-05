@@ -43,7 +43,7 @@ function core_install() {
 }
 
 function cloud_install() {
-	apt-get -y --force-yes install parrot-cloud parrot-tools-cloud
+	apt-get -y --force-yes install  parrot-tools-cloud
 }
 
 function standard_install() {
@@ -51,15 +51,15 @@ function standard_install() {
 }
 
 function full_install() {
-	apt-get -y --force-yes install parrot-interface parrot-tools parrot-interface-full parrot-tools-full
+	apt-get -y --force-yes install parrot-interface parrot-interface-full parrot-tools-full
 }
 
 function home_install() {
-	apt-get -y --force-yes install parrot-interface-full
+	apt-get -y --force-yes install parrot-interface-full parrot-interface
 }
 
 function embedded_install() {
-	apt-get -y --force-yes install parrot-interface parrot-tools-arm
+	apt-get -y --force-yes install parrot-interface parrot-mini
 }
 
 
