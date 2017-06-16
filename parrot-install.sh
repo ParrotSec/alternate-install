@@ -11,7 +11,7 @@ show_menu(){
     echo -e "Welcome to Parrot On-Debian Installer Script"
     echo -e "\t\trev 0.2 - 2015-06-10"
     echo -e "${MENU}**${NUMBER} 1)${MENU} Install Core Only ${NORMAL}"
-    echo -e "${MENU}**${NUMBER} 2)${MENU} Install Cloud Edition ${NORMAL}"
+    echo -e "${MENU}**${NUMBER} 2)${MENU} Install Headless Edition ${NORMAL}"
     echo -e "${MENU}**${NUMBER} 3)${MENU} Install Standard Edition ${NORMAL}"
     echo -e "${MENU}**${NUMBER} 4)${MENU} Install Full Edition ${NORMAL}"
     echo -e "${MENU}**${NUMBER} 5)${MENU} Install Home Edition ${NORMAL}"
@@ -42,8 +42,8 @@ function core_install() {
 	apt-get -y --force-yes -o Dpkg::Options::=”–force-overwrite” autoremove
 }
 
-function cloud_install() {
-	apt-get -y --force-yes -o Dpkg::Options::=”–force-overwrite” install  parrot-tools-cloud
+function headless_install() {
+	apt-get -y --force-yes -o Dpkg::Options::=”–force-overwrite” install  parrot-pico
 }
 
 function standard_install() {
@@ -81,9 +81,9 @@ while [ opt != '' ]
         ;;
 
         2) clear;
-		option_picked "Installing Cloud Edition";
+		option_picked "Installing Headless Edition";
 		core_install;
-		cloud_install;
+		headless_install;
 		option_picked "Operation Done!";
 		exit;
             ;;
