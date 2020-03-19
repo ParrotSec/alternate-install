@@ -1,26 +1,10 @@
 #!/bin/bash
 
+VARIANT=$1
+
 show_menu(){
-    if [ $# -eq 0 ]
+    if [ $VARIANT ]
     then
-        NORMAL=`echo "\033[m"`
-        MENU=`echo "\033[36m"` #Blue
-        NUMBER=`echo "\033[33m"` #yellow
-        FGRED=`echo "\033[41m"`
-        RED_TEXT=`echo "\033[31m"`
-        ENTER_LINE=`echo "\033[33m"`
-        echo -e "${MENU}*********************************************${NORMAL}"
-        echo -e "Welcome to Parrot On-Debian Installer Script"
-        echo -e "\t\trev 0.2 - 2015-06-10"
-        echo -e "${MENU}**${NUMBER} 1)${MENU} Install Core Only ${NORMAL}"
-        echo -e "${MENU}**${NUMBER} 2)${MENU} Install Headless Edition ${NORMAL}"
-        echo -e "${MENU}**${NUMBER} 3)${MENU} Install Security Edition ${NORMAL}"
-        echo -e "${MENU}**${NUMBER} 4)${MENU} Install Home Edition ${NORMAL}"
-        echo -e "${MENU}**${NUMBER} 5)${MENU} Install Embedded Edition ${NORMAL}"
-        echo -e "${MENU}*********************************************${NORMAL}"
-        echo -e "${ENTER_LINE}Please enter a menu option and enter or ${RED_TEXT}enter to exit. ${NORMAL}"
-        read opt
-    else
         case $1 in
         core)
             opt = 1
@@ -38,6 +22,24 @@ show_menu(){
             opt = 5
         ;;
         esac
+    else
+        NORMAL=`echo "\033[m"`
+        MENU=`echo "\033[36m"` #Blue
+        NUMBER=`echo "\033[33m"` #yellow
+        FGRED=`echo "\033[41m"`
+        RED_TEXT=`echo "\033[31m"`
+        ENTER_LINE=`echo "\033[33m"`
+        echo -e "${MENU}*********************************************${NORMAL}"
+        echo -e "Welcome to Parrot On-Debian Installer Script"
+        echo -e "\t\trev 0.3 - 2020-03-19"
+        echo -e "${MENU}**${NUMBER} 1)${MENU} Install Core Only ${NORMAL}"
+        echo -e "${MENU}**${NUMBER} 2)${MENU} Install Headless Edition ${NORMAL}"
+        echo -e "${MENU}**${NUMBER} 3)${MENU} Install Security Edition ${NORMAL}"
+        echo -e "${MENU}**${NUMBER} 4)${MENU} Install Home Edition ${NORMAL}"
+        echo -e "${MENU}**${NUMBER} 5)${MENU} Install Embedded Edition ${NORMAL}"
+        echo -e "${MENU}*********************************************${NORMAL}"
+        echo -e "${ENTER_LINE}Please enter a menu option and enter or ${RED_TEXT}enter to exit. ${NORMAL}"
+        read opt
     fi
 }
 
