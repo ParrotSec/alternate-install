@@ -1,23 +1,43 @@
 #!/bin/bash
 
 show_menu(){
-    NORMAL=`echo "\033[m"`
-    MENU=`echo "\033[36m"` #Blue
-    NUMBER=`echo "\033[33m"` #yellow
-    FGRED=`echo "\033[41m"`
-    RED_TEXT=`echo "\033[31m"`
-    ENTER_LINE=`echo "\033[33m"`
-    echo -e "${MENU}*********************************************${NORMAL}"
-    echo -e "Welcome to Parrot On-Debian Installer Script"
-    echo -e "\t\trev 0.2 - 2015-06-10"
-    echo -e "${MENU}**${NUMBER} 1)${MENU} Install Core Only ${NORMAL}"
-    echo -e "${MENU}**${NUMBER} 2)${MENU} Install Headless Edition ${NORMAL}"
-    echo -e "${MENU}**${NUMBER} 3)${MENU} Install Security Edition ${NORMAL}"
-    echo -e "${MENU}**${NUMBER} 4)${MENU} Install Home Edition ${NORMAL}"
-    echo -e "${MENU}**${NUMBER} 5)${MENU} Install Embedded Edition ${NORMAL}"
-    echo -e "${MENU}*********************************************${NORMAL}"
-    echo -e "${ENTER_LINE}Please enter a menu option and enter or ${RED_TEXT}enter to exit. ${NORMAL}"
-    read opt
+    if [ $# -eq 0 ]
+    then
+        NORMAL=`echo "\033[m"`
+        MENU=`echo "\033[36m"` #Blue
+        NUMBER=`echo "\033[33m"` #yellow
+        FGRED=`echo "\033[41m"`
+        RED_TEXT=`echo "\033[31m"`
+        ENTER_LINE=`echo "\033[33m"`
+        echo -e "${MENU}*********************************************${NORMAL}"
+        echo -e "Welcome to Parrot On-Debian Installer Script"
+        echo -e "\t\trev 0.2 - 2015-06-10"
+        echo -e "${MENU}**${NUMBER} 1)${MENU} Install Core Only ${NORMAL}"
+        echo -e "${MENU}**${NUMBER} 2)${MENU} Install Headless Edition ${NORMAL}"
+        echo -e "${MENU}**${NUMBER} 3)${MENU} Install Security Edition ${NORMAL}"
+        echo -e "${MENU}**${NUMBER} 4)${MENU} Install Home Edition ${NORMAL}"
+        echo -e "${MENU}**${NUMBER} 5)${MENU} Install Embedded Edition ${NORMAL}"
+        echo -e "${MENU}*********************************************${NORMAL}"
+        echo -e "${ENTER_LINE}Please enter a menu option and enter or ${RED_TEXT}enter to exit. ${NORMAL}"
+        read opt
+    else
+        case $1 in
+        core)
+            opt = 1
+        ;;
+        headless)
+            opt = 2
+        ;;
+        security)
+            opt = 3
+        ;;
+        home)
+            opt = 4
+        ;;
+        embedded)
+            opt = 5
+        ;;
+    fi
 }
 
 function option_picked() {
@@ -33,12 +53,12 @@ function core_install() {
 	apt-get update
 	apt-get -y full-upgrade
 	apt-get -y install gnupg
-	echo -e "deb https://mirror.parrot.sh/parrot rolling main contrib non-free" > /etc/apt/sources.list.d/parrot.list
+	echo -e "deb https://mirror.parrot.sh/mirrors/parrot rolling main contrib non-free" > /etc/apt/sources.list.d/parrot.list
 	echo -e "# The parrot repo is located at /etc/apt/sources.list.d/parrot.list" > /etc/apt/sources.list
 	wget -qO - https://deb.parrotsec.org/parrot/misc/parrotsec.gpg | apt-key add -
 	apt-get update
 	apt-get -y --force-yes -o Dpkg::Options::="--force-overwrite" install apt-parrot parrot-archive-keyring --no-install-recommends
-	parrot-mirror-selector default stable #change it if you want another mirror, launch it without parameters to get the full list of available mirrors
+	parrot-mirror-selector default rolling
 	apt-get update
 	apt -y --allow-downgrades -o Dpkg::Options::="--force-overwrite" install parrot-core
 	apt -y --allow-downgrades -o Dpkg::Options::="--force-overwrite" dist-upgrade
@@ -54,11 +74,11 @@ function security_install() {
 }
 
 function home_install() {
-	apt -y --allow-downgrades install parrot-interface-full parrot-interface
+	apt -y --allow-downgrades install parrot-interface parrot-interface-full parrot-interface
 }
 
 function embedded_install() {
-	apt -y --allow-downgrades install parrot-interface parrot-mini
+	apt -y --allow-downgrades install parrot-mini
 }
 
 
