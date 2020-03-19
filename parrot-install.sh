@@ -37,6 +37,7 @@ show_menu(){
         embedded)
             opt = 5
         ;;
+        esac
     fi
 }
 
