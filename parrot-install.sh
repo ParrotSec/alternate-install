@@ -59,11 +59,11 @@ function core_install() {
 	wget -qO - https://deb.parrotsec.org/parrot/misc/parrotsec.gpg | apt-key add -
 	apt-get update
 	apt-get -y --force-yes -o Dpkg::Options::="--force-overwrite" install apt-parrot parrot-archive-keyring --no-install-recommends
-	parrot-mirror-selector default rolling
 	apt-get update
 	apt -y --allow-downgrades -o Dpkg::Options::="--force-overwrite" install parrot-core
 	apt -y --allow-downgrades -o Dpkg::Options::="--force-overwrite" dist-upgrade
 	apt -y autoremove
+	parrot-mirror-selector default rolling
 }
 
 function headless_install() {
