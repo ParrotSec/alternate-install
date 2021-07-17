@@ -1,0 +1,2 @@
+deb https://mirror.parrot.sh/mirrors/parrot rolling main contrib non-free
+deb-src https://mirror.parrot.sh/mirrors/parrot rolling main contrib non-free
