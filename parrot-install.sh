@@ -28,42 +28,39 @@ function ctrl_c() {
 # Prompt
 prompt=$(echo -e "${redColor}\n┌─[root${endColor}${yellowColor}@${endColor}${cyanColor}parrot${endColor}${redColor}]-[${endColor}${greenColor}/parrot-installer${endColor}${redColor}]\n└──╼ ${endColor}")
 
-# Silece
-silece="> /dev/null"
-
 # Dependences
 dependences="bash wget"
 
 #---------- Install Functions ----------
 
 function core_install() {
-    apt update $silence
-    apt install -y $dependences $silence
-    cp -r config/etc/* /etc $silence
-    wget -qO - https://deb.parrotsec.org/parrot/misc/parrotsec.gpg | apt-key add - $silence
-    apt update $silence
-    apt -y --force-yes -o Dpkg::Options::="--force-overwrite" install apt-parrot parrot-archive-keyring --no-install-recommends $silence
-    parrot-mirror-selector default stable $silence
-    apt update $silence
-    apt -y --allow-downgrades -o Dpkg::Options::="--force-overwrite" install parrot-core $silence
-    apt -y --allow-downgrades -o Dpkg::Options::="--force-overwrite" dist-upgrade $silence
-    apt -y autoremove $silence
+    apt update
+    apt install -y $dependences
+    cp -r config/etc/* /etc
+    wget -qO - https://deb.parrotsec.org/parrot/misc/parrotsec.gpg | apt-key add -
+    apt update
+    apt -y --force-yes -o Dpkg::Options::="--force-overwrite" install apt-parrot parrot-archive-keyring --no-install-recommends
+    parrot-mirror-selector default stable
+    apt update
+    apt -y --allow-downgrades -o Dpkg::Options::="--force-overwrite" install parrot-core
+    apt -y --allow-downgrades -o Dpkg::Options::="--force-overwrite" dist-upgrade
+    apt -y autoremove
 }
 
 function headless_install() {
-    apt -y --allow-downgrades install parrot-pico $silence
+    apt -y --allow-downgrades install parrot-pico
 }
 
 function security_install() {
-    apt -y --allow-downgrades install parrot-interface parrot-interface-full parrot-tools-full $silence
+    apt -y --allow-downgrades install parrot-interface parrot-interface-full parrot-tools-full
 }
 
 function home_install() {
-    apt -y --allow-downgrades install parrot-interface-full parrot-interface $silence
+    apt -y --allow-downgrades install parrot-interface-full parrot-interface
 }
 
 function embedded_install() {
-    apt -y --allow-downgrades install parrot-interface parrot-mini $silence
+    apt -y --allow-downgrades install parrot-interface parrot-mini
 }
 
 #---------- Script Functions ----------
@@ -145,8 +142,8 @@ function init_installer() {
 }
 
 #---------- Installer ----------
-if [ "whoami" == "root" ]; then
+if [ `whoami` == "root" ]; then
 	init_installer;
 else
-	echo -e "${yellowColor}R U Drunk? This script needs to be run as ${endColor}${redColor}root${endColor}${yellowColor}!${endColor}"
+	echo -e "${yellowColor}R U Drunk? This script needs to be run as ${endColor}${redColor}root${endColor}${yellowColor}!${endColor}";
 fi
