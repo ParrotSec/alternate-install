@@ -1,46 +1,49 @@
 #!/bin/bash
 
-show_menu(){
-    NORMAL=`echo "\033[m"`
-    MENU=`echo "\033[36m"` #Blue
-    NUMBER=`echo "\033[33m"` #yellow
-    FGRED=`echo "\033[41m"`
-    RED_TEXT=`echo "\033[31m"`
-    ENTER_LINE=`echo "\033[33m"`
-    echo -e "${MENU}*********************************************${NORMAL}"
-    echo -e "Welcome to Parrot On-Debian Installer Script"
-    echo -e "\t\trev 0.2 - 2015-06-10"
-    echo -e "${MENU}**${NUMBER} 1)${MENU} Install Core Only ${NORMAL}"
-    echo -e "${MENU}**${NUMBER} 2)${MENU} Install Headless Edition ${NORMAL}"
-    echo -e "${MENU}**${NUMBER} 3)${MENU} Install Security Edition ${NORMAL}"
-    echo -e "${MENU}**${NUMBER} 4)${MENU} Install Home Edition ${NORMAL}"
-    echo -e "${MENU}**${NUMBER} 5)${MENU} Install Embedded Edition ${NORMAL}"
-    echo -e "${MENU}*********************************************${NORMAL}"
-    echo -e "${ENTER_LINE}Please enter a menu option and enter or ${RED_TEXT}enter to exit. ${NORMAL}"
-    read opt
+# Parrot OS Alternative Install - All copyrights (©) are owned by: Lorenzo "Palinuro" Faletra
+# Credits: @kyb3rvizsla (Kyb3r Vizsla <kyb3rvizsla.com>)
+
+#---------- Varibles ----------
+# Colours
+endColor="\e[0m\e[0m"
+redColor="\e[0;31m\e[1m"
+blueColor="\e[0;34m\e[1m"
+cyanColor="\e[01;96m\e[1m"
+grayColor="\e[0;37m\e[1m"
+greenColor="\e[0;32m\e[1m"
+purpleColor="\e[0;35m\e[1m"
+yellowColor="\e[0;33m\e[1m"
+turquoiseColor="\e[0;36m\e[1m"
+
+dot="${redColor}[${endColor}${yellowColor}*${endColor}${redColor}] ${endColor}"
+
+# CTRL + C
+trap ctrl_c INT
+
+function ctrl_c() {
+    echo -e "\n\n${dot}${yellowColor}Exiting...${endColor}"
+    exit
 }
 
-function option_picked() {
-    COLOR='\033[01;31m' # bold red
-    RESET='\033[00;00m' # normal white
-    MESSAGE=${@:-"${RESET}Error: No message passed"}
-    echo -e "${COLOR}${MESSAGE}${RESET}"
-}
+# Prompt
+prompt=$(echo -e "${redColor}\n┌─[root${endColor}${yellowColor}@${endColor}${cyanColor}parrot${endColor}${redColor}]-[${endColor}${greenColor}/parrot-installer${endColor}${redColor}]\n└──╼ ${endColor}")
 
+#---------- Install Functions ----------
 
 function core_install() {
-	# Protect against HTTP vulnerabilities [https://www.debian.org/security/2016/dsa-3733], [https://www.debian.org/security/2019/dsa-4371]
-	apt-get update
-	echo -e "deb https://mirror.parrotsec.org/parrot rolling main contrib non-free" > /etc/apt/sources.list.d/parrot.list
-	echo -e "# This file is empty, feel free to add here your custom APT repositories\n\n# The standard Parrot repositories are NOT here. If you want to\n# edit them, take a look into\n#                      /etc/apt/sources.list.d/parrot.list\n#                      /etc/apt/sources.list.d/debian.list\n\n\n\n# If you want to change the default parrot repositories setting\n# another localized mirror, then use the command parrot-mirror-selector\n# and see its usage message to know what mirrors are available\n\n\n\n#uncomment the following line to enable the Parrot Testing Repository\n#deb http://us.repository.frozenbox.org/parrot testing main contrib nonfree" > /etc/apt/sources.list
+	apt update
+	apt install -y bash wget gnupg
 	wget -qO - https://deb.parrotsec.org/parrot/misc/parrotsec.gpg | apt-key add -
-	apt-get update
-	apt-get -y --force-yes -o Dpkg::Options::="--force-overwrite" install apt-parrot parrot-archive-keyring --no-install-recommends
-	parrot-mirror-selector default stable #change it if you want another mirror, launch it without parameters to get the full list of available mirrors
-	apt-get update
-	apt -y --allow-downgrades -o Dpkg::Options::="--force-overwrite" install parrot-core
-	apt -y --allow-downgrades -o Dpkg::Options::="--force-overwrite" dist-upgrade
+	cp config/etc/apt/sources.list /etc/apt/sources.list
+	cp -r config/etc/apt/sources.list.d/* /etc/apt/sources.list.d
+	cp config/etc/apt/sources.list.parrot /etc/apt/sources.list.parrot
+	cp config/etc/apt/listchanges.conf /etc/apt/listchanges.conf
+	apt update
+	cp config/etc/os-release /etc/os-release
+	apt -y dist-upgrade
 	apt -y autoremove
+	apt update
+	apt install -y parrot-core
 }
 
 function headless_install() {
@@ -48,85 +51,115 @@ function headless_install() {
 }
 
 function security_install() {
-	apt -y --allow-downgrades install parrot-interface parrot-interface-full parrot-tools-full
+	apt --allow-downgrades install -y parrot-interface parrot-interface-full parrot-mate parrot-tools-full parrot-drivers parrot-crypto parrot-privacy parrot-devel firefox
 }
 
 function home_install() {
-	apt -y --allow-downgrades install parrot-interface-full parrot-interface
+	apt --allow-downgrades install -y parrot-interface parrot-interface-full parrot-mate parrot-drivers parrot-privacy firefox vscodium zeal
 }
 
 function embedded_install() {
 	apt -y --allow-downgrades install parrot-interface parrot-mini
 }
 
-
-
-function init_function() {
-clear
-show_menu
-while [ opt != '' ]
-    do
-    if [[ $opt = "" ]]; then 
-            exit;
-    else
-        case $opt in
-        1) clear;
-        	option_picked "Installing Core";
-		core_install;
-		option_picked "Operation Done!";
-        	exit;
-        ;;
-
-        2) clear;
-		option_picked "Installing Headless Edition";
-		core_install;
-		headless_install;
-		option_picked "Operation Done!";
-		exit;
-            ;;
-
-        3) clear;
-		option_picked "Installing Parrot Security OS";
-		core_install;
-		security_install;
-		option_picked "Operation Done!";
-		exit;
-            ;;
-
-	4) clear;
-		option_picked "Installing Home Edition";
-		core_install;
-		home_install;
-		option_picked "Operation Done!";
-		exit;
-		;;
-	5) clear;
-		option_picked "Installing Embedded Edition";
-		core_install;
-		embedded_install;
-		option_picked "Operation Done!";
-		exit;
-	    ;;
-        x)exit;
-        ;;
-
-	q)exit;
-	;;
-
-        \n)exit;
-        ;;
-
-        *)clear;
-        option_picked "Pick an option from the menu";
-        show_menu;
-        ;;
-    esac
-fi
-done
+function repos_install() {
+	apt update
+	apt install -y bash gnupg
+	wget -qO - https://deb.parrotsec.org/parrot/misc/parrotsec.gpg | apt-key add -
+	cp -r config/etc/apt/sources.list.d/* /etc/apt/sources.list.d
+	apt update
 }
 
+#---------- Script Functions ----------
+function menu() {
+	clear
+    echo -e "${blueColor} ______                              _____                      _ _       _                _            ${endColor}"
+    echo -e "${blueColor}(_____ \                     _      (_____)           _        | | |     | |              (_)      _    ${endColor}"
+    echo -e "${blueColor} _____) )___  ____ ____ ___ | |_       _   ____   ___| |_  ____| | |      \ \   ____  ____ _ ____ | |_  ${endColor}"
+    echo -e "${blueColor}|  ____/ _  |/ ___) ___) _ \|  _)     | | |  _ \ /___)  _)/ _  | | |       \ \ / ___)/ ___) |  _ \|  _) ${endColor}"
+    echo -e "${blueColor}| |   ( ( | | |  | |  | |_| | |__    _| |_| | | |___ | |_( ( | | | |   _____) | (___| |   | | | | | |__ ${endColor}"
+    echo -e "${blueColor}|_|    \_||_|_|  |_|   \___/ \___)  (_____)_| |_(___/ \___)_||_|_|_|  (______/ \____)_|   |_| ||_/ \___)${endColor}"
+    echo -e "${blueColor}                                                                                            |_|         ${endColor}"
+	echo -e "\n${yellowColor}1) ${endColor}${blueColor}Install Core Only${endColor}"
+	echo -e "${yellowColor}2) ${endColor}${blueColor}Install Headless Editions${endColor}"
+	echo -e "${yellowColor}3) ${endColor}${blueColor}Install Security Edition${endColor}"
+	echo -e "${yellowColor}4) ${endColor}${blueColor}Install Home Edition${endColor}"
+	echo -e "${yellowColor}5) ${endColor}${blueColor}Install Embedded Edition${endColor}"
+	echo -e "${yellowColor}6) ${endColor}${blueColor}Install Repositories${endColor}"
+
+	if [ "$error" == "0" ]; then
+	echo -e "\n\n${dot}${yellowColor}Option does not exist, retry${endColor}";
+	fi;
+
+	read -p "$prompt" option
+}
+
+function init_installer() {
+	menu
+	case $option in
+		1) clear;
+		echo -e "${blueColor} ╦┌┐┌┌─┐┌┬┐┌─┐┬  ┬  ┬┌┐┌┌─┐  ╔═╗┌─┐┬─┐┌─┐${endColor}";
+		echo -e "${blueColor} ║│││└─┐ │ ├─┤│  │  │││││ ┬  ║  │ │├┬┘├┤ ${endColor}";
+		echo -e "${blueColor} ╩┘└┘└─┘ ┴ ┴ ┴┴─┘┴─┘┴┘└┘└─┘  ╚═╝└─┘┴└─└─┘${endColor}${yellowColor}ooo${endColor}";
+		core_install
+		echo -e "\n\n${dot}${yellowColor}Parrot OS Core Installed!!!${endColor}"
+		;;
+
+		2) clear;
+		echo -e "${purpleColor} ╦┌┐┌┌─┐┌┬┐┌─┐┬  ┬  ┬┌┐┌┌─┐  ╦ ╦┌─┐┌─┐┌┬┐┬  ┌─┐┌─┐┌─┐${endColor}"
+		echo -e "${purpleColor} ║│││└─┐ │ ├─┤│  │  │││││ ┬  ╠═╣├┤ ├─┤ │││  ├┤ └─┐└─┐${endColor}"
+		echo -e "${purpleColor} ╩┘└┘└─┘ ┴ ┴ ┴┴─┘┴─┘┴┘└┘└─┘  ╩ ╩└─┘┴ ┴─┴┘┴─┘└─┘└─┘└─┘${endColor}${yellowColor}ooo${endColor}"
+		core_install;
+		headless_install;
+		echo -e "\n\n${dot}${yellowColor}Parrot OS Headless Installed!!!${endColor}"
+		;;
+
+		3) clear;
+		echo -e "${redColor} ╦┌┐┌┌─┐┌┬┐┌─┐┬  ┬  ┬┌┐┌┌─┐  ╔═╗┌─┐┌─┐┬ ┬┬─┐┬┌┬┐┬ ┬  ╔═╗┌┬┐┬┌┬┐┬┌─┐┌┐┌${endColor}"
+		echo -e "${redColor} ║│││└─┐ │ ├─┤│  │  │││││ ┬  ╚═╗├┤ │  │ │├┬┘│ │ └┬┘  ║╣  │││ │ ││ ││││${endColor}"
+		echo -e "${redColor} ╩┘└┘└─┘ ┴ ┴ ┴┴─┘┴─┘┴┘└┘└─┘  ╚═╝└─┘└─┘└─┘┴└─┴ ┴  ┴   ╚═╝─┴┘┴ ┴ ┴└─┘┘└┘${endColor}${yellowColor}ooo${endColor}"
+		core_install;
+		security_install;
+		echo -e "\n\n${dot}${yellowColor}Parrot OS Security Edition Installed!!!${endColor}"
+		echo -e "${purpleColor}Estamos Hack - We Hack${endColor}"
+		;;
+
+		4) clear;
+		echo -e "${purpleColor} ╦┌┐┌┌─┐┌┬┐┌─┐┬  ┬  ┬┌┐┌┌─┐  ╦ ╦┌─┐┌┬┐┌─┐  ╔═╗┌┬┐┬┌┬┐┬┌─┐┌┐┌${endColor}"
+		echo -e "${purpleColor} ║│││└─┐ │ ├─┤│  │  │││││ ┬  ╠═╣│ ││││├┤   ║╣  │││ │ ││ ││││${endColor}"
+		echo -e "${purpleColor} ╩┘└┘└─┘ ┴ ┴ ┴┴─┘┴─┘┴┘└┘└─┘  ╩ ╩└─┘┴ ┴└─┘  ╚═╝─┴┘┴ ┴ ┴└─┘┘└┘${endColor}${yellowColor}ooo${endColor}"
+		core_install;
+		home_install;
+		echo -e "\n\n${dot}${yellowColor}Parrot OS Home Edition Installed!!!${endColor}"
+		;;
+
+		5) clear;
+		echo -e "${purpleColor} ╦┌┐┌┌─┐┌┬┐┌─┐┬  ┬  ┬┌┐┌┌─┐  ╔═╗┌┬┐┌┐ ┌─┐┌┬┐┌┬┐┌─┐┌┬┐${endColor}"
+		echo -e "${purpleColor} ║│││└─┐ │ ├─┤│  │  │││││ ┬  ║╣ │││├┴┐├┤  ││ ││├┤  ││${endColor}"
+		echo -e "${purpleColor} ╩┘└┘└─┘ ┴ ┴ ┴┴─┘┴─┘┴┘└┘└─┘  ╚═╝┴ ┴└─┘└─┘─┴┘─┴┘└─┘─┴┘${endColor}${yellowColor}ooo${endColor}"
+		core_install;
+		embedded_install;
+		echo -e "\n\n${dot}${yellowColor}Parrot OS Embedded Installed!!!${endColor}"
+		;;
+
+		6) clear;
+		echo -e "${purpleColor} ╦┌┐┌┌─┐┌┬┐┌─┐┬  ┬  ┬┌┐┌┌─┐  ╦═╗┌─┐┌─┐┌─┐┌─┐${endColor}"
+		echo -e "${purpleColor} ║│││└─┐ │ ├─┤│  │  │││││ ┬  ╠╦╝├┤ ├─┘│ │└─┐${endColor}"
+		echo -e "${purpleColor} ╩┘└┘└─┘ ┴ ┴ ┴┴─┘┴─┘┴┘└┘└─┘  ╩╚═└─┘┴  └─┘└─┘${endColor}${yellowColor}ooo${endColor}"
+		repos_install;
+		echo -e "\n\n${dot}${yellowColor}Parrot OS Embedded Installed!!!${endColor}"
+		;;
+
+		*)
+		error="0"
+		menu
+		;;
+	esac
+}
+
+#---------- Installer ----------
 if [ `whoami` == "root" ]; then
-	init_function;
+	init_installer;
 else
-	echo "R U Drunk? This script needs to be run as root!"
+	echo -e "${yellowColor}R U Drunk? This script needs to be run as ${endColor}${redColor}root${endColor}${yellowColor}!${endColor}";
 fi
